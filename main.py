@@ -137,8 +137,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await send_long_message(update, response_text)
 
 
+from scheduler import init_scheduler
+
 def run_bot():
     application = Application.builder().token(TELEGRAM_TOKEN).build()
+
+    # Start the scheduler before polling
+    init_scheduler(application)
 
     application.add_handler(
         MessageHandler(
