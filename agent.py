@@ -67,6 +67,7 @@ def sanitize_content(content) -> str:
 class State(TypedDict, total=False):
     messages: Annotated[list[BaseMessage], add_messages]
     approved: NotRequired[bool]
+    chat_id: NotRequired[str]
 
 
 def clone_message_with_sanitized_content(message: BaseMessage) -> BaseMessage:
@@ -210,6 +211,7 @@ def create_agent():
     def execute_pending_tools(state: State):
         messages = state.get("messages", [])
         pending_tool_calls = get_pending_tool_calls(messages)
+        chat_id = state.get("chat_id", "")
 
         tool_messages = []
 
@@ -220,6 +222,10 @@ def create_agent():
 
             if not tool_call_id:
                 continue
+
+            # Inject chat_id for our new tools
+            if tool_name in ("set_reminder", "create_recurring_reminder") and "chat_id" not in tool_args:
+                tool_args["chat_id"] = chat_id
 
             if tool_name not in tools_by_name:
                 tool_messages.append(

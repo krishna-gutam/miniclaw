@@ -94,6 +94,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         result = graph.invoke(
             {
                 "approved": True,
+                "chat_id": chat_id,
             },
             config=config,
         )
@@ -102,6 +103,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             {
                 "messages": [("user", user_text)],
                 "approved": False,
+                "chat_id": chat_id,
             },
             config=config,
         )
