@@ -1,0 +1,9 @@
+langgraph
+langchain-google-genai
+fastapi
+uvicorn
+python-telegram-bot
+python-dotenv
+langchain-core
+tavily-python
+bs4
