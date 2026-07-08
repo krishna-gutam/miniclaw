@@ -137,13 +137,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await send_long_message(update, response_text)
 
 
-from scheduler import init_scheduler
+from scheduler import init_scheduler, scheduler
 
 def run_bot():
     application = Application.builder().token(TELEGRAM_TOKEN).build()
 
-    # Start the scheduler before polling
-    init_scheduler(application)
+    # Register a post_init callback that starts the scheduler
+    async def post_init(app):
+        init_scheduler(app)
+
+    application.post_init = post_init
+
+    async def post_shutdown(app):
+        scheduler.shutdown(wait=False)
+
+    application.post_shutdown = post_shutdown
 
     application.add_handler(
         MessageHandler(
